@@ -1,4 +1,4 @@
-// src/components/FilterSort.js
+
 import React from 'react';
 
 export default function FilterSort({ setFilter, setSort }) {
