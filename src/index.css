@@ -41,3 +41,17 @@ body {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
+
+
+/* Add this at the end of the file */
+.z-modal {
+  z-index: 1000;
+}
+
+.z-cart {
+  z-index: 900;
+}
+
+.z-popup {
+  z-index: 800;
+}

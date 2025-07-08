@@ -1,6 +1,7 @@
 
 import React from 'react';
 
+
 export default function Cart({ cart }) {
   const total = cart.reduce((sum, item) => sum + item.price, 0);
 

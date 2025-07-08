@@ -1,5 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
+
+import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import HomePage from './components/HomePage';
 import ProductGrid from './components/ProductGrid';
@@ -8,6 +10,9 @@ import OfferPopup from './components/OfferPopup';
 import QuickViewModal from './components/QuickViewModal';
 import AboutPage from './components/AboutPage';
 import ContactPage from './components/ContactPage';
+import ProductDetailPage from './components/ProductDetailPage';
+import ProductsPage from './components/ProductsPage';
+import Checkout from './components/Checkout';
 import './index.css';
 
 function App() {
@@ -17,6 +22,9 @@ function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activePage, setActivePage] = useState('home');
   const [quickViewProduct, setQuickViewProduct] = useState(null);
+  const [activeProduct, setActiveProduct] = useState(null);
+   const [selectedCategory, setSelectedCategory] = useState(null);
+
   
   // Mock product data with  products
   const [products, setProducts] = useState([]);
@@ -59,15 +67,17 @@ function App() {
           isFeatured: false
         },
         {
+   
           id: 4,
-          title: "Ergonomic Office Chair",
-          price: 249.99,
-          description: "Support your posture during long work hours with our ergonomic chair. Features adjustable lumbar support, headrest, and breathable mesh fabric.",
-          category: "Furniture",
-          imageUrl: "https://images.pexels.com/photos/6316068/pexels-photo-6316068.jpeg?auto=compress&cs=tinysrgb&w=600",
-          rating: 4.7,
-          stock: 5,
-          isFeatured: true
+         title: " Office Chair",
+         price: 249.99,
+         description: "Support your posture during long work hours with our ergonomic chair. Features adjustable lumbar support, headrest, and breathable mesh fabric.",
+         category: "Furniture",
+         imageUrl: "https://images.pexels.com/photos/1866149/pexels-photo-1866149.jpeg?auto=compress&cs=tinysrgb&w=600",
+         rating: 4.7,
+         stock: 5,
+         isFeatured: true
+
         },
         {
           id: 5,
@@ -104,22 +114,22 @@ function App() {
         },
         {
           id: 8,
-          title: "Memory Foam Mattress",
+          title: "Mattress",
           price: 599.99,
           description: "Experience ultimate comfort with our premium memory foam mattress. Provides excellent support and pressure relief.",
           category: "Home & Kitchen",
-          imageUrl: "https://images.pexels.com/photos/6758773/pexels-photo-6758773.jpeg?auto=compress&cs=tinysrgb&w=600",
+          imageUrl: "https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=600",
           rating: 4.8,
           stock: 7,
           isFeatured: true
         },
         {
           id: 9,
-          title: "Smartphone Gimbal Stabilizer",
+          title: "Smartphone",
           price: 99.99,
           description: "Capture smooth, professional-quality videos with this 3-axis smartphone stabilizer. Perfect for vloggers and content creators.",
           category: "Electronics",
-          imageUrl: "https://images.pexels.com/photos/4041279/pexels-photo-4041279.jpeg?auto=compress&cs=tinysrgb&w=600",
+          imageUrl: "https://images.pexels.com/photos/788946/pexels-photo-788946.jpeg?auto=compress&cs=tinysrgb&w=600",
           rating: 4.7,
           stock: 14,
           isFeatured: true
@@ -141,7 +151,7 @@ function App() {
           price: 499.99,
           description: "4K camera drone with GPS positioning, 30-minute flight time, and obstacle avoidance technology. Perfect for aerial photography.",
           category: "Electronics",
-          imageUrl: "https://images.pexels.com/photos/341523/pexels-photo-341523.jpeg?auto=compress&cs=tinysrgb&w=600",
+          imageUrl: "https://images.pexels.com/photos/442587/pexels-photo-442587.jpeg?auto=compress&cs=tinysrgb&w=600",
           rating: 4.9,
           stock: 6,
           isFeatured: true
@@ -159,11 +169,11 @@ function App() {
         },
         {
           id: 13,
-          title: "Electric Toothbrush Set",
+          title: "Laptop",
           price: 89.99,
           description: "Professional electric toothbrush with 5 cleaning modes, pressure sensor, and travel case. Improves gum health and whitens teeth.",
-          category: "Beauty & Health",
-          imageUrl: "https://images.pexels.com/photos/6621337/pexels-photo-6621337.jpeg?auto=compress&cs=tinysrgb&w=600",
+          category: "Electronics",
+          imageUrl: "https://images.pexels.com/photos/18105/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=600",
           rating: 4.8,
           stock: 18,
           isFeatured: true
@@ -185,7 +195,7 @@ function App() {
           price: 129.99,
           description: "Complete anti-aging skincare regimen with cleanser, serum, moisturizer, and eye cream. Made with natural ingredients.",
           category: "Beauty & Health",
-          imageUrl: "https://images.pexels.com/photos/4202924/pexels-photo-4202924.jpeg?auto=compress&cs=tinysrgb&w=600",
+          imageUrl: "https://images.pexels.com/photos/965989/pexels-photo-965989.jpeg?auto=compress&cs=tinysrgb&w=600",
           rating: 4.9,
           stock: 16,
           isFeatured: true
@@ -200,7 +210,97 @@ function App() {
           rating: 4.8,
           stock: 13,
           isFeatured: true
-        }
+        },
+
+        {
+         id: 17,
+        title: "Noise Cancelling Earbuds Pro",
+        price: 149.99,
+        description: "True wireless earbuds with active noise cancellation, 24h battery life, and water resistance for workouts.",
+        category: "Electronics",
+        imageUrl: "https://images.pexels.com/photos/1646704/pexels-photo-1646704.jpeg?auto=compress&cs=tinysrgb&w=600",
+        rating: 4.7,
+        stock: 21,
+        isFeatured: true
+},
+{
+       id: 18,
+      title: "Ultra HD Smart TV 55-inch",
+      price: 699.99,
+      description: "Crystal-clear 4K display with HDR10+, smart platform with streaming apps, and voice control compatibility.",
+      category: "Electronics",
+      imageUrl: "https://images.pexels.com/photos/4009402/pexels-photo-4009402.jpeg?auto=compress&cs=tinysrgb&w=600",
+      rating: 4.8,
+  stock: 8,
+  isFeatured: true
+},
+{
+  id: 19,
+  title: "Doormat",
+  price: 19.99,
+  description: "Durable coir doormat with non-slip backing, traps dirt and moisture, easy to clean — ideal for indoor or outdoor use.",
+  category: "Home & Kitchen",
+  imageUrl: "https://images.pexels.com/photos/2950003/pexels-photo-2950003.jpeg?auto=compress&cs=tinysrgb&w=600",
+  rating: 4.6,
+  stock: 14,
+  isFeatured: false
+},
+{
+  id: 20,
+  title: "Luxury Egyptian Cotton Sheets",
+  price: 89.99,
+  description: "1000-thread count bed sheets with deep pockets, breathable fabric, and hotel-quality softness.",
+  category: "Home & Kitchen",
+  imageUrl: "https://images.pexels.com/photos/6585755/pexels-photo-6585755.jpeg?auto=compress&cs=tinysrgb&w=600",
+  rating: 4.9,
+  stock: 26,
+  isFeatured: true
+},
+{
+  id: 21,
+  title: "Professional DSLR Camera Kit",
+  price: 1299.99,
+  description: "24MP DSLR with 18-55mm lens, 4K video recording, and Wi-Fi connectivity for instant sharing.",
+  category: "Electronics",
+  imageUrl: "https://images.pexels.com/photos/51383/photo-camera-subject-photographer-51383.jpeg?auto=compress&cs=tinysrgb&w=600",
+  rating: 4.9,
+  stock: 6,
+  isFeatured: true
+},
+{
+  id: 22,
+  title: "Adjustable Dumbbell Set",
+  price: 299.99,
+  description: "Space-saving adjustable dumbbells from 5-50lbs with dial system and ergonomic grips.",
+  category: "Sports",
+  imageUrl: "https://images.pexels.com/photos/17840/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=600",
+  rating: 4.7,
+  stock: 9,
+  isFeatured: false
+},
+{
+  id: 23,
+  title: "Sofa set",
+  price: 349.99,
+  description: "Elegant and cozy sofa set with premium fabric, perfect for modern living rooms and everyday comfort.",
+  category: "Furniture",
+  imageUrl: "https://images.pexels.com/photos/1648776/pexels-photo-1648776.jpeg?auto=compress&cs=tinysrgb&w=600",
+  rating: 4.8,
+  stock: 7,
+  isFeatured: true
+},
+{
+  id: 24,
+  title: "Bluetooth Beanie Hat",
+  price: 39.99,
+  description: "Winter hat with built-in wireless headphones, microphone, and 10-hour playback time.",
+  category: "Fashion",
+  imageUrl: "https://images.pexels.com/photos/6634370/pexels-photo-6634370.jpeg?auto=compress&cs=tinysrgb&w=600",
+  rating: 4.3,
+  stock: 32,
+  isFeatured: false
+}
+
       ];
       setProducts(mockProducts);
       setIsLoading(false);
@@ -230,6 +330,11 @@ function App() {
     setIsCartOpen(true);
   };
 
+
+
+
+
+
   const removeFromCart = (productId) => {
     setCart(cart.filter(item => item.id !== productId));
   };
@@ -253,13 +358,21 @@ function App() {
   };
   
 
-  const navigateTo = (page) => {
-    setActivePage(page);
-    window.scrollTo(0, 0);
+  
+
+  
+  // Update navigateTo function to handle category filtering
+  const navigateTo = (page, product = null) => {
+     setActivePage(page);
+     setActiveProduct(product);
+     window.scrollTo(0, 0);
   };
+
+
 
   const openQuickView = (product) => {
     setQuickViewProduct(product);
+    
   };
 
   return (
@@ -273,6 +386,7 @@ function App() {
       />
       
       <main className="flex-grow">
+        
         {activePage === 'home' && (
           <HomePage 
             products={products} 
@@ -283,15 +397,42 @@ function App() {
             openQuickView={openQuickView}
           />
         )}
+
+        
         
         {activePage === 'products' && (
           <div className="container mx-auto px-4 py-8">
             <div className="text-center mb-12">
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">Discover Our Products</h1>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Explore our premium collection across multiple categories
+              <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                {selectedCategory ? `${selectedCategory} Collection` : "Discover Our Products"}
+              </h1>
+               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                {selectedCategory 
+                  ? `Premium ${selectedCategory} selection` 
+                  : "Explore our premium collection across multiple categories"}
               </p>
+
+              {selectedCategory && (
+                <button
+                  className="mt-4 text-indigo-600 hover:text-indigo-800 font-medium"
+                  onClick={() => navigateTo('products')}
+                >
+                  &larr; View All Categories
+                </button>
+              )}
             </div>
+
+            <ProductsPage 
+            products={products}
+            wishlist={wishlist}
+            toggleWishlist={toggleWishlist}
+            addToCart={addToCart}
+            isLoading={isLoading}
+            openQuickView={openQuickView}
+            selectedCategory={selectedCategory}
+            navigateTo={navigateTo}
+          />
+       
             
             <ProductGrid 
               products={products} 
@@ -300,8 +441,22 @@ function App() {
               addToCart={addToCart}
               isLoading={isLoading}
               openQuickView={openQuickView}
+              category={selectedCategory}
             />
           </div>
+        )}
+
+        {/* New Add */}
+
+
+        {activePage === 'product-detail' && activeProduct && (
+          <ProductDetailPage 
+            product={activeProduct} 
+            onNavigate={navigateTo}
+            wishlist={wishlist}
+            toggleWishlist={toggleWishlist}
+            addToCart={addToCart}
+          />
         )}
         
         {activePage === 'wishlist' && (
@@ -367,6 +522,7 @@ function App() {
             )}
           </div>
         )}
+
         
         {activePage === 'about' && <AboutPage />}
         
@@ -512,6 +668,7 @@ function App() {
             addToCart(quickViewProduct);
             setQuickViewProduct(null);
           }}
+          onViewFullDetails={(product) => navigateTo('product-detail', product)}
         />
       )}
     </div>
@@ -519,3 +676,8 @@ function App() {
 }
 
 export default App;
+
+
+
+
+
