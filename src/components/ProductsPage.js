@@ -1,58 +1,4 @@
-// // src/components/ProductsPage.js
 
-// import React from 'react';
-// import ProductGrid from './ProductGrid';
-
-// const ProductsPage = ({ 
-//   products, 
-//   wishlist, 
-//   toggleWishlist, 
-//   addToCart, 
-//   isLoading, 
-//   openQuickView, 
-//   selectedCategory, 
-//   navigateTo 
-// }) => {
-//   return (
-//     <div className="container mx-auto px-4 py-8">
-//       <div className="text-center mb-12">
-//         <h1 className="text-4xl font-bold text-gray-900 mb-4">
-//           {selectedCategory ? `${selectedCategory} Collection` : "Discover Our Products"}
-//         </h1>
-//         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-//           {selectedCategory 
-//             ? `Premium ${selectedCategory} selection` 
-//             : "Explore our premium collection across multiple categories"}
-//         </p>
-
-//         {selectedCategory && (
-//           <button
-//             className="mt-4 text-indigo-600 hover:text-indigo-800 font-medium"
-//             onClick={() => navigateTo('products')}
-//           >
-//             &larr; View All Categories
-//           </button>
-//         )}
-//       </div>
-      
-//       <ProductGrid 
-//         products={products} 
-//         wishlist={wishlist} 
-//         toggleWishlist={toggleWishlist}
-//         addToCart={addToCart}
-//         isLoading={isLoading}
-//         openQuickView={openQuickView}
-//         category={selectedCategory}
-//       />
-//     </div>
-//   );
-// };
-
-// export default ProductsPage;
-
-
-
-// components/ProductsPage.jsx
 import React, { useState, useEffect } from 'react';
 
 const ProductsPage = ({ 
@@ -82,6 +28,7 @@ const ProductsPage = ({
   // Initialize filters when products load
   useEffect(() => {
     if (products.length > 0) {
+      
       setFilters({
         categories: selectedCategory ? [selectedCategory] : allCategories,
         priceRange: [minPrice, maxPrice]
@@ -91,13 +38,18 @@ const ProductsPage = ({
   
   // Handle category filter change
   const handleCategoryChange = (category) => {
+    // console.log(category);
     setFilters(prev => {
       if (prev.categories.includes(category)) {
+        let ans = prev.categories.filter(c => c !== category);
+        console.log(ans);
+
         return {
           ...prev,
           categories: prev.categories.filter(c => c !== category)
         };
       } else {
+        console.log("else");
         return {
           ...prev,
           categories: [...prev.categories, category]

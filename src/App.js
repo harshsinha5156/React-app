@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
+import UserProfileForm from './components/UserProfileForm';
 import HomePage from './components/HomePage';
 import ProductGrid from './components/ProductGrid';
 import Footer from './components/Footer';
@@ -29,6 +30,21 @@ function App() {
   // Mock product data with  products
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+
+   // Add user state
+  const [user, setUser] = useState({
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'john.doe@example.com',
+    phone: '+1 (555) 123-4567',
+    street: '123 Main Street',
+    city: 'New York',
+    state: 'NY',
+    zip: '10001',
+    country: 'USA',
+    profileImage: null,
+  });
   
   useEffect(() => {
     setTimeout(() => {
@@ -356,6 +372,13 @@ function App() {
     return cart.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2);
     
   };
+
+  
+  // Add function to update user profile
+  const updateUserProfile = (newProfileData) => {
+    setUser(prev => ({ ...prev, ...newProfileData }));
+    alert('Profile updated successfully!');
+  };
   
 
   
@@ -374,6 +397,9 @@ function App() {
     setQuickViewProduct(product);
     
   };
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -383,18 +409,25 @@ function App() {
         onCartClick={() => setIsCartOpen(!isCartOpen)}
         onNavigate={navigateTo}
         activePage={activePage}
+        products={products} 
+        setFilteredProducts = {setFilteredProducts}
+        setSearchTerm = {setSearchTerm}
+        searchTerm = {searchTerm}
       />
       
       <main className="flex-grow">
         
         {activePage === 'home' && (
           <HomePage 
+            filteredProducts={filteredProducts}
             products={products} 
             wishlist={wishlist} 
             toggleWishlist={toggleWishlist}
             addToCart={addToCart}
             navigateTo={navigateTo}
             openQuickView={openQuickView}
+            setSearchTerm = {setSearchTerm}
+        searchTerm = {searchTerm}
           />
         )}
 
@@ -423,7 +456,7 @@ function App() {
             </div>
 
             <ProductsPage 
-            products={products}
+            products={filteredProducts}
             wishlist={wishlist}
             toggleWishlist={toggleWishlist}
             addToCart={addToCart}
@@ -434,15 +467,7 @@ function App() {
           />
        
             
-            <ProductGrid 
-              products={products} 
-              wishlist={wishlist} 
-              toggleWishlist={toggleWishlist}
-              addToCart={addToCart}
-              isLoading={isLoading}
-              openQuickView={openQuickView}
-              category={selectedCategory}
-            />
+            
           </div>
         )}
 
@@ -522,6 +547,18 @@ function App() {
             )}
           </div>
         )}
+
+         {activePage === 'account' && (
+          <div className="container mx-auto px-4 py-8">
+            <UserProfileForm 
+              userData={user} 
+              onUpdateProfile={updateUserProfile} 
+              onNavigate={navigateTo}
+            />
+          </div>
+        )}
+
+
 
         
         {activePage === 'about' && <AboutPage />}
