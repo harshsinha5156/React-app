@@ -6,14 +6,14 @@ const OfferPopup = ({ onClose }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       onClose();
-    }, 10000); // Auto-close after 10 seconds
+    }, 10000); 
     
     return () => clearTimeout(timer);
   }, [onClose]);
 
-  // Function to handle claiming the offer
+  
   const handleClaimOffer = () => {
-    // Close the popup
+    
     onClose();
     
    

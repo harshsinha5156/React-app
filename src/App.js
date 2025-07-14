@@ -1,11 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
 
-import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import UserProfileForm from './components/UserProfileForm';
 import HomePage from './components/HomePage';
-import ProductGrid from './components/ProductGrid';
 import Footer from './components/Footer';
 import OfferPopup from './components/OfferPopup';
 import QuickViewModal from './components/QuickViewModal';
@@ -13,7 +11,17 @@ import AboutPage from './components/AboutPage';
 import ContactPage from './components/ContactPage';
 import ProductDetailPage from './components/ProductDetailPage';
 import ProductsPage from './components/ProductsPage';
-import Checkout from './components/Checkout';
+import Checkout from './components/Checkout/Checkout';
+import OrderSuccess from './components/OrderSuccess';
+import MyAccount from './components/Account/MyAccount';
+import OrderHistory from './components/Account/OrderHistory';
+import OrderDetails from './components/Account/OrderDetails';
+import AccountSettings from './components/Account/AccountSettings';
+import LoginPage from './components/Auth/LoginPage'; 
+import LogoutPage from './components/Auth/LogoutPage'; 
+import RegisterPage from './components/Auth/RegisterPage';
+import ForgotPasswordPage from './components/Auth/ForgotPasswordPage';
+
 import './index.css';
 
 function App() {
@@ -24,15 +32,21 @@ function App() {
   const [activePage, setActivePage] = useState('home');
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const [activeProduct, setActiveProduct] = useState(null);
-   const [selectedCategory, setSelectedCategory] = useState(null);
-
+  const [selectedCategory] = useState(null);
+  const [orders, setOrders] = useState([]);
+  const [lastOrder, setLastOrder] = useState(null);
+  const [activeOrderId, setActiveOrderId] = useState(null);
+    
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+   const [currentPage, setCurrentPage] = useState('login');
   
   // Mock product data with  products
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  
 
 
-   // Add user state
+  
   const [user, setUser] = useState({
     firstName: 'John',
     lastName: 'Doe',
@@ -45,6 +59,45 @@ function App() {
     country: 'USA',
     profileImage: null,
   });
+
+
+  const handleNavigation = (page) => {
+    setCurrentPage(page);
+      setActivePage(page); 
+
+  };
+
+
+
+  
+  
+  const handleLogin = (userData) => {
+    setUser(userData);
+    setIsLoggedIn(true);
+    navigateTo('account');
+  };
+
+  // Add handleLogout function
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setUser({
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      street: '',
+      city: '',
+      state: '',
+      zip: '',
+      country: '',
+      profileImage: null,
+    });
+    navigateTo('home');
+  };
+
+   
+
+  
   
   useEffect(() => {
     setTimeout(() => {
@@ -347,6 +400,39 @@ function App() {
   };
 
 
+  
+  // Add placeOrder function
+  const placeOrder = (order) => {
+    const newOrder = {
+      ...order,
+      id: `ORD-${Date.now()}`,
+    date: new Date().toLocaleDateString(),
+    status: 'Completed'
+    };
+    setOrders([newOrder, ...orders]);
+    setLastOrder(newOrder);
+    setCart([]);
+  };
+
+   
+  
+
+  const navigateTo = (page, product = null, orderId = null) => {
+  
+    const protectedRoutes = ['account', 'account/orders', 'account/orders/detail', 'account/settings', 'checkout'];
+    
+    if (protectedRoutes.includes(page) && !isLoggedIn) {
+      setActivePage('login');
+    } else {
+      setActivePage(page);
+      setActiveProduct(product);
+      if (orderId) setActiveOrderId(orderId);
+    }
+    window.scrollTo(0, 0);
+  };
+
+
+
 
 
 
@@ -383,14 +469,6 @@ function App() {
 
   
 
-  
-  // Update navigateTo function to handle category filtering
-  const navigateTo = (page, product = null) => {
-     setActivePage(page);
-     setActiveProduct(product);
-     window.scrollTo(0, 0);
-  };
-
 
 
   const openQuickView = (product) => {
@@ -399,6 +477,9 @@ function App() {
   };
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+
+    
+  const activeOrder = orders.find(order => order.id === activeOrderId);
   
 
   return (
@@ -413,9 +494,40 @@ function App() {
         setFilteredProducts = {setFilteredProducts}
         setSearchTerm = {setSearchTerm}
         searchTerm = {searchTerm}
+          isLoggedIn={isLoggedIn} 
+        onLogout={handleLogout}  
       />
       
       <main className="flex-grow">
+
+        
+
+        {/* Add Login Page */}
+        {activePage === 'login' && (
+          <LoginPage 
+             onLogin={handleLogin} 
+          onNavigate={handleNavigation}
+          />
+        )}
+
+         {/* Add Logout Page */}
+        {activePage === 'logout' && (
+          <LogoutPage 
+            onLogout={handleLogout}
+            navigateTo={navigateTo}
+          />
+        )}
+
+        {activePage === 'register' && (
+  <RegisterPage onNavigate={handleNavigation} />
+  
+)}
+
+{activePage === 'forgot-password' && (
+  <ForgotPasswordPage onNavigate={handleNavigation} />
+)}
+
+        
         
         {activePage === 'home' && (
           <HomePage 
@@ -471,7 +583,6 @@ function App() {
           </div>
         )}
 
-        {/* New Add */}
 
 
         {activePage === 'product-detail' && activeProduct && (
@@ -554,6 +665,64 @@ function App() {
               userData={user} 
               onUpdateProfile={updateUserProfile} 
               onNavigate={navigateTo}
+            />
+          </div>
+        )}
+
+        {/* Checkout Page */}
+        {activePage === 'checkout' && (
+          <Checkout 
+            cart={cart} 
+            user={user} 
+            placeOrder={placeOrder} 
+            navigateTo={navigateTo} 
+          />
+        )}
+
+          {/* Order Success Page */}
+        {activePage === 'order-success' && (
+          <OrderSuccess 
+            orderId={lastOrder?.id || ''} 
+            navigateTo={navigateTo} 
+          />
+        )}
+
+        {/* Account Dashboard */}
+          {activePage === 'account' && (
+          <MyAccount 
+            user={user} 
+            orders={orders} 
+            navigateTo={navigateTo}
+            onLogout={handleLogout} 
+          />
+        )}
+
+        {/* Order History */}
+        {activePage === 'account/orders' && (
+          <div className="container mx-auto px-4 py-8">
+            <OrderHistory 
+              orders={orders} 
+              navigateTo={navigateTo} 
+            />
+          </div>
+        )}
+
+        {/* Order Details */}
+        {activePage === 'account/orders/detail' && (
+          <div className="container mx-auto px-4 py-8">
+            <OrderDetails 
+              order={activeOrder} 
+              navigateTo={navigateTo} 
+            />
+          </div>
+        )}
+
+          {/* Account Settings */}
+        {activePage === 'account/settings' && (
+          <div className="container mx-auto px-4 py-8">
+            <AccountSettings 
+              user={user} 
+              updateUserProfile={updateUserProfile} 
             />
           </div>
         )}
@@ -669,9 +838,13 @@ function App() {
                     <div className="mt-6">
                       <button 
                         className="w-full bg-indigo-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                      >
-                        Checkout
-                      </button>
+                         onClick={() => {
+                       setIsCartOpen(false);
+                       navigateTo('checkout');
+                       }}
+                     >
+                      Checkout
+                   </button>
                     </div>
                     
                     <div className="mt-6 flex justify-center text-sm text-center text-gray-500">
@@ -713,6 +886,15 @@ function App() {
 }
 
 export default App;
+
+
+
+
+
+
+
+
+
 
 
 

@@ -6,6 +6,7 @@ import {
   FaBars,
   FaTimes,
   FaSearch,
+  FaSignOutAlt,
 } from "react-icons/fa";
 
 const Header = ({
@@ -18,15 +19,37 @@ const Header = ({
   setFilteredProducts,
   setSearchTerm,
   searchTerm,
+  isLoggedIn,
+  onLogout,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [searchSuggestions, setSearchSuggestions] = useState([]);
   const searchRef = useRef(null);
 
   const handleNavigation = (page, params = {}) => {
     onNavigate(page, params);
     setMobileMenuOpen(false);
-    setIsSearchFocused(false); // Close dropdown when navigating
+    setIsSearchFocused(false);
+    setSearchSuggestions([]);
+  };
+
+  const navigateToAccount = () => {
+    onNavigate("account");
+    setMobileMenuOpen(false);
+    setIsSearchFocused(false);
+  };
+
+  const navigateToLogin = () => {
+    onNavigate("login");
+    setMobileMenuOpen(false);
+    setIsSearchFocused(false);
+  };
+
+  const handleLogout = () => {
+    onLogout();
+    setMobileMenuOpen(false);
+    setIsSearchFocused(false);
   };
 
   // Featured products
@@ -54,7 +77,7 @@ const Header = ({
                   .includes(searchTerm.toLowerCase())
             );
     setFilteredProducts(filtered);
-    setCurrentPage(1); // reset page on search
+    setCurrentPage(1); 
   }, [searchTerm, products]);
 
   const handleSearchSuggestion = (suggestion) => {
@@ -62,7 +85,6 @@ const Header = ({
     handleNavigation("products", { search: suggestion });
   };
 
-  // Close search dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -89,7 +111,7 @@ const Header = ({
             Shop<span className="text-orange-500">Ease</span>
           </div>
 
-          {/* Search Bar */}
+          {/* Search Bar (Desktop) */}
           <div
             ref={searchRef}
             className="hidden md:block flex-1 mx-8 max-w-2xl relative"
@@ -102,9 +124,9 @@ const Header = ({
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
-                  setIsSearchFocused(true); // Show dropdown when typing
+                  setIsSearchFocused(true); 
                 }}
-                onFocus={() => setIsSearchFocused(true)} // Show dropdown when focused
+                onFocus={() => setIsSearchFocused(true)} 
               />
               <button
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-indigo-600"
@@ -133,12 +155,10 @@ const Header = ({
                               handleSearchSuggestion(product.title)
                             }
                           >
-                            
                             <div>
                               <div className="font-medium text-gray-900">
                                 {product.title}
                               </div>
-                              
                             </div>
                           </button>
                         ))}
@@ -174,21 +194,23 @@ const Header = ({
                                 handleSearchSuggestion(product.title)
                               }
                             >
-                              
+                              <img
+                                src={product.imageUrl}
+                                alt={product.title}
+                                className="w-10 h-10 object-cover rounded mr-3"
+                              />
                               <div>
                                 <div className="font-medium text-gray-900">
                                   {product.title}
                                 </div>
-                                
                               </div>
                             </button>
                           ))}
                       </div>
                     </div>
-                    
                   </>
                 )}
-                
+
                 {searchTerm.trim() !== "" && (
                   <div className="p-2">
                     <button
@@ -216,8 +238,8 @@ const Header = ({
             )}
           </div>
 
-          {/* Icons */}
           <div className="flex items-center space-x-4">
+            {/* Search Toggle (Mobile) */}
             <button
               className="md:hidden text-gray-600 hover:text-indigo-600"
               onClick={() => {
@@ -252,13 +274,32 @@ const Header = ({
               )}
             </button>
 
-            <button
-              className="text-gray-600 hover:text-indigo-600"
-              onClick={() => onNavigate("account")}
-            >
-              <FaUser size={20} />
-            </button>
+            {/* Account / Login / Logout */}
+            {isLoggedIn ? (
+              <>
+                <button
+                  className="text-gray-600 hover:text-indigo-600"
+                  onClick={navigateToAccount}
+                >
+                  <FaUser size={20} />
+                </button>
+                <button
+                  className="text-gray-600 hover:text-indigo-600"
+                  onClick={handleLogout}
+                >
+                  <FaSignOutAlt size={20} />
+                </button>
+              </>
+            ) : (
+              <button
+                className="text-gray-600 hover:text-indigo-600"
+                onClick={navigateToLogin}
+              >
+                <FaUser size={20} />
+              </button>
+            )}
 
+            {/* Hamburger Menu (Mobile) */}
             <button
               className="md:hidden text-gray-600 hover:text-indigo-600"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -295,7 +336,7 @@ const Header = ({
             {/* Mobile Search Dropdown */}
             {isSearchFocused && (
               <div className="bg-white shadow-lg rounded-lg mt-1 z-20 max-h-96 overflow-y-auto">
-                {/* Featured Products */}
+                
                 {/* Featured Products */}
                 {searchTerm.trim() === "" ? (
                   featuredProducts.length > 0 && (
@@ -312,12 +353,10 @@ const Header = ({
                               handleSearchSuggestion(product.title)
                             }
                           >
-                            
                             <div>
                               <div className="font-medium text-gray-900">
                                 {product.title}
                               </div>
-                              
                             </div>
                           </button>
                         ))}
@@ -353,18 +392,15 @@ const Header = ({
                                 handleSearchSuggestion(product.title)
                               }
                             >
-                              
                               <div>
                                 <div className="font-medium text-gray-900">
                                   {product.title}
                                 </div>
-                                
                               </div>
                             </button>
                           ))}
                       </div>
                     </div>
-                    
                   </>
                 )}
 
@@ -452,6 +488,43 @@ const Header = ({
                 Contact
               </button>
             </li>
+            {isLoggedIn ? (
+              <>
+                <li>
+                  <button
+                    onClick={navigateToAccount}
+                    className={`${
+                      activePage.startsWith("account")
+                        ? "text-indigo-700 font-medium"
+                        : "text-gray-600"
+                    } hover:text-indigo-700`}
+                  >
+                    My Account
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={handleLogout}
+                    className="text-gray-600 hover:text-indigo-700"
+                  >
+                    Logout
+                  </button>
+                </li>
+              </>
+            ) : (
+              <li>
+                <button
+                  onClick={navigateToLogin}
+                  className={`${
+                    activePage === "login"
+                      ? "text-indigo-700 font-medium"
+                      : "text-gray-600"
+                  } hover:text-indigo-700`}
+                >
+                  Login
+                </button>
+              </li>
+            )}
           </ul>
         </nav>
       </div>

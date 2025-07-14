@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 
+
 const ProductsPage = ({ 
   products, 
   wishlist, 
@@ -18,14 +19,13 @@ const ProductsPage = ({
   
   const [sortOption, setSortOption] = useState('default');
   
-  // Get all unique categories from products
   const allCategories = [...new Set(products.map(p => p.category))];
   
-  // Calculate min and max prices
+  
   const minPrice = Math.min(...products.map(p => p.price));
   const maxPrice = Math.max(...products.map(p => p.price));
   
-  // Initialize filters when products load
+  
   useEffect(() => {
     if (products.length > 0) {
       
@@ -34,11 +34,12 @@ const ProductsPage = ({
         priceRange: [minPrice, maxPrice]
       });
     }
-  }, [products, selectedCategory]);
+  }, [products, 
+    selectedCategory, minPrice, maxPrice, allCategories]);
   
   // Handle category filter change
   const handleCategoryChange = (category) => {
-    // console.log(category);
+  
     setFilters(prev => {
       if (prev.categories.includes(category)) {
         let ans = prev.categories.filter(c => c !== category);
@@ -299,3 +300,5 @@ const ProductsPage = ({
 };
 
 export default ProductsPage;
+
+

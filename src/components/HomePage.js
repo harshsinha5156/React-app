@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 const HomePage = ({
   products,
@@ -94,7 +94,7 @@ const HomePage = ({
       return;
     }
     
-    // Clear any previous errors
+  
     setError('');
     setIsLoading(true);
     
@@ -104,7 +104,7 @@ const HomePage = ({
       setSubscribed(true);
       setEmail('');
       
-      // Reset success message after 5 seconds
+      
       setTimeout(() => {
         setSubscribed(false);
       }, 5000);
@@ -142,7 +142,7 @@ const HomePage = ({
             <div
               key={category.name}
               className="bg-white rounded-lg shadow-sm sm:shadow-md overflow-hidden cursor-pointer transform transition hover:scale-[1.02] sm:hover:scale-[1.03]"
-              onClick={() => navigateTo("products", category.name)}
+              onClick={() => navigateTo("products", { category: category.name })}
             >
               <div className="h-20 sm:h-24 md:h-28 bg-gray-200 flex items-center justify-center">
                 <img
@@ -249,7 +249,7 @@ const HomePage = ({
                       </svg>
                     </button>
 
-                    {product.stock <= 5 && product.stock > 0 && (
+                    {product.stock <= 0 && product.stock > 0 && (
                       <div className="absolute top-2 left-2 bg-orange-500 text-white text-xs px-1.5 py-1 rounded">
                         Only {product.stock} left
                       </div>
