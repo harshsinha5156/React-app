@@ -34,8 +34,7 @@ const ProductsPage = ({
         priceRange: [minPrice, maxPrice]
       });
     }
-  }, [products, 
-    selectedCategory, minPrice, maxPrice, allCategories]);
+  }, [products,  selectedCategory]);
   
   // Handle category filter change
   const handleCategoryChange = (category) => {
@@ -300,5 +299,7 @@ const ProductsPage = ({
 };
 
 export default ProductsPage;
+
+
 
 

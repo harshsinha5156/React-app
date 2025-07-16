@@ -376,10 +376,11 @@ function App() {
     }, 800);
   }, []);
 
-  const toggleWishlist = (productId) => {
-    if (wishlist.includes(productId)) {
+
+  const toggleWishlist = (productId)=>{
+    if(wishlist.includes(productId)){
       setWishlist(wishlist.filter(id => id !== productId));
-    } else {
+    }else {
       setWishlist([...wishlist, productId]);
     }
   };
@@ -399,8 +400,6 @@ function App() {
     setIsCartOpen(true);
   };
 
-
-  
   // Add placeOrder function
   const placeOrder = (order) => {
     const newOrder = {
@@ -413,6 +412,8 @@ function App() {
     setLastOrder(newOrder);
     setCart([]);
   };
+
+  
 
    
   
@@ -494,7 +495,7 @@ function App() {
         setFilteredProducts = {setFilteredProducts}
         setSearchTerm = {setSearchTerm}
         searchTerm = {searchTerm}
-          isLoggedIn={isLoggedIn} 
+        isLoggedIn={isLoggedIn} 
         onLogout={handleLogout}  
       />
       
@@ -505,7 +506,7 @@ function App() {
         {/* Add Login Page */}
         {activePage === 'login' && (
           <LoginPage 
-             onLogin={handleLogin} 
+          onLogin={handleLogin} 
           onNavigate={handleNavigation}
           />
         )}
@@ -539,7 +540,7 @@ function App() {
             navigateTo={navigateTo}
             openQuickView={openQuickView}
             setSearchTerm = {setSearchTerm}
-        searchTerm = {searchTerm}
+            searchTerm = {searchTerm}
           />
         )}
 
@@ -678,6 +679,8 @@ function App() {
             navigateTo={navigateTo} 
           />
         )}
+
+        
 
           {/* Order Success Page */}
         {activePage === 'order-success' && (
